@@ -97,7 +97,7 @@ u: () # main per-sentence processing
 	# now we need to find fake responses 
 	if (%response == $_responseCount AND %rand > 50)
 	{
-		nofail(TOPIC respond(~QUIBBLE_ALL))
+		nofail(TOPIC ^respond(~QUIBBLE_ALL))
 	}
 
 	# if we have rejoinders for what we said OR we asked a question, stop here
