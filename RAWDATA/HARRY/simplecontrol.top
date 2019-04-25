@@ -2,7 +2,38 @@
 # When you see this "#", anything after this is a comment, it is not code that is executed. 
 # For example, this line is a comment.
 
-# this function is executed once for every new user chatting with harry
+# Simple Control Functional Summary
+# This control file drives the processing logic when a response is received from a user.
+# Functional Steps: 
+# 1. See if the rejoinder matches. 
+# 	A rejoinder is a response directly connected the current conversation thread.  
+# 	For example, CS previously asked, "What is your name?" and we are looking for a response. 
+# 	The a: lines are all rejoinders.
+# 	u: ( ) What is your name?
+# 		a: ( Jack ) Hello, Jack.
+# 		a: ( Jill ) Hello, Jill. 
+# 		a: ( * )  Hello there.
+# 2. Respond in current topic. 
+# 	Look for u: ?: and s: matches in the current topic. 
+# 	Do not look for matches from gambits, which are t: and q: lines. 
+# 3. Respond in other topics based on keyword. 
+# 	Try to match a topic using the keywords at the top of topic.
+# 	For example, if the user responds with "name", the below topic becomes a candidate. 
+# 		topic: ~INTRODUCTIONS (~emogoodbye ~emohello ~emohowzit name here )
+# 4. Respond from keywordless topic. 
+# 	Look for responses in a named topic without keywords at the top. 
+# 	Example: topic: ~keywordless nostay()
+# 5. Quibble sometimes.  
+# 	50% of the time, look for a reponse in RAWDATA\QUIBBLE\quibble.top
+# 	These are generic answers to different types of questions.
+# 6. Gambit from current topic.
+# 	Execute gambit mode for the $$currenttopic topic. 
+# 	A gambit has a t: or g: lines.
+# 7. Gambit from other topics based on keyword.
+# 	Try to match a topic using the keywords at the top of topic.
+# 8. All else has failed, give generic response
+
+# This function is executed once for every new user chatting with harry
 outputmacro: harry()  # you get harry by default
 # The $cs_token is set to a variety of features I want for tokenizing inpu.
 $cs_token = #DO_INTERJECTION_SPLITTING  | #DO_SUBSTITUTE_SYSTEM   | #DO_NUMBER_MERGE | #DO_DATE_MERGE  | #DO_PROPERNAME_MERGE  | #DO_SPELLCHECK  | #DO_PARSE 
@@ -97,7 +128,7 @@ u: () # main per-sentence processing
 	# now we need to find fake responses 
 	if (%response == $_responseCount AND %rand > 50)
 	{
-		nofail(TOPIC respond(~QUIBBLE_ALL))
+		nofail(TOPIC ^respond(~QUIBBLE_ALL))
 	}
 
 	# if we have rejoinders for what we said OR we asked a question, stop here
